@@ -9,6 +9,13 @@ module.exports = {
   env: {
     browser: true,
   },
+  globals: {
+    window: true,
+    mapboxgl: true,
+    document: true,
+    isSupported: true,
+    MapboxGeocoder: true
+  },
   extends: 'airbnb-base',
   // required to lint *.vue files
   plugins: [
@@ -24,6 +31,14 @@ module.exports = {
   },
   // add your custom rules here
   'rules': {
+    'func-names': 0,
+    'max-len': 0,
+    'no-new': 0,
+    'space-before-function-paren': 0,
+    'no-trailing-spaces': 0,
+    'prefer-template': 0,
+    'no-console': 0,
+
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {
       'js': 'never',
