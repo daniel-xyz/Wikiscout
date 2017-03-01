@@ -1,0 +1,26 @@
+#wiki-entry {
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 1px 1px 9px rgba(0,0,0,0.1);
+
+  @media @md-and-up {
+    overflow: auto;
+    max-height: 100%;
+    float: left;
+    width: 580px;
+  }
+
+  img {
+    max-width: 100%;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s
+}
+
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}

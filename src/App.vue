@@ -2,7 +2,8 @@
   <div id="app">
     <top-header></top-header>
     <main>
-      <router-view></router-view>
+      <router-view name="main"></router-view>
+      <router-view name="layer"></router-view>
     </main>
   </div>
 </template>
