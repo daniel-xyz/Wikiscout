@@ -115,7 +115,7 @@
           type: 'symbol',
           source: sourceID,
           layout: {
-            'icon-image': 'marker-hobby',
+            'icon-image': 'marker-blank',
             'icon-offset': [0, -51],
             'icon-allow-overlap': true,
           },
@@ -200,7 +200,7 @@
 
           this.map.flyTo({
             center: [lng, lat],
-            zoom: 16,
+            zoom: 16.1,
           });
         });
       },
