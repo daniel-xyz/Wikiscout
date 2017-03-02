@@ -38,6 +38,7 @@ module.exports = {
     'no-trailing-spaces': 0,
     'prefer-template': 0,
     'no-console': 0,
+    'consistent-return': 0,
 
     // don't require .vue extension when importing
     'import/extensions': ['error', 'always', {

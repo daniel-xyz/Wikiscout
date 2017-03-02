@@ -7,7 +7,7 @@ const endpoint = 'https://de.wikipedia.org/w/api.php';
 let markers = {
 
   getInRadius (lng, lat, radius, callback) {
-    const url = endpoint + '?action=query&prop=coordinates|pageterms&colimit=50&pithumbsize=144&pilimit=50&generator=geosearch&ggscoord=' + lat + '|' + lng + '&ggsradius=' + radius + '&ggslimit=50&format=json&wbptterms=description';
+    const url = endpoint + '?action=query&prop=coordinates|pageimages&colimit=100&piprop=thumbnail&pithumbsize=144&pilimit=50&generator=geosearch&ggscoord=' + lat + '|' + lng + '&ggsradius=' + radius + '&ggslimit=100&format=json';
 
     // TODO - Build url with params object
     const params = {

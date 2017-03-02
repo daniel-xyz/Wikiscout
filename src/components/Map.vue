@@ -67,11 +67,14 @@
 
           this.lastMarkerUpdateAt.lng = lng;
           this.lastMarkerUpdateAt.lat = lat;
+          this.markers = [];
 
           console.log(response);
 
           Object.values(response.query.pages).forEach((marker) => {
-            console.log(marker);
+            if (typeof marker.coordinates === 'undefined') {
+              return;
+            }
 
             this.markers.push({
               type: 'Feature',
@@ -94,8 +97,6 @@
             this.addSource('markers');
             this.addLayer('markers');
           }
-
-          return null;
         });
       },
 
@@ -115,9 +116,12 @@
           type: 'symbol',
           source: sourceID,
           layout: {
-            'icon-image': 'marker-blank',
+            'icon-image': 'marker',
             'icon-offset': [0, -51],
             'icon-allow-overlap': true,
+          },
+          paint: {
+            'icon-opacity': 1,
           },
         });
       },
@@ -148,14 +152,16 @@
       },
 
       onMoveEndListener () {
+        if (!this.map.getLayer('markers')) {
+          return;
+        }
+
         const zoomLevel = this.map.getZoom();
 
-        // console.log('zoom: ' + zoomLevel);
-
-        if (zoomLevel < 16 && this.map.getLayer('markers')) {
-          this.map.setLayoutProperty('markers', 'visibility', 'none');
-        } else if (this.map.getLayer('markers')) {
-          this.map.setLayoutProperty('markers', 'visibility', 'visible');
+        if (zoomLevel < 15) {
+          this.map.setPaintProperty('markers', 'icon-opacity', 0);
+        } else {
+          this.map.setPaintProperty('markers', 'icon-opacity', 1);
 
           const currentLng = this.map.getCenter().lng;
           const currentLat = this.map.getCenter().lat;
@@ -164,8 +170,6 @@
             { latitude: this.lastMarkerUpdateAt.lat, longitude: this.lastMarkerUpdateAt.lng },
             { latitude: currentLat, longitude: currentLng },
           );
-
-          console.log('distance: ' + distance);
 
           if (distance > 200) {
             this.loadMarkersInRadius(currentLng, currentLat, 500);
@@ -179,7 +183,7 @@
           this.removeLoadingLayer();
 
           if ('geolocation' in navigator) {
-            this.flyToCurrentLocation();
+            // this.flyToCurrentLocation();
 
             this.map.addControl(new mapboxgl.GeolocateControl({
               watchPosition: true,
@@ -194,9 +198,6 @@
         navigator.geolocation.getCurrentPosition((position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-
-          console.log('Lng: ' + lng + ' Lat: ' + lat);
-
 
           this.map.flyTo({
             center: [lng, lat],
