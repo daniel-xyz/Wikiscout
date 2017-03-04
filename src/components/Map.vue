@@ -136,6 +136,14 @@
         }, 500);
       },
 
+      enableGeolocationIcon () {
+        if ('geolocation' in navigator) {
+          this.map.addControl(new mapboxgl.GeolocateControl({
+            watchPosition: false,
+          }));
+        }
+      },
+
       onMapClickHandler (e) {
         const features = this.map.queryRenderedFeatures(e.point, { layers: ['markers'] });
 
@@ -177,18 +185,12 @@
         }
       },
 
+
       initEventListeners () {
         this.map.once('load', () => {
-          this.loadMarkersInRadius(this.map.getCenter().lng, this.map.getCenter().lat, 500);
           this.removeLoadingLayer();
-
-          if ('geolocation' in navigator) {
-            // this.flyToCurrentLocation();
-
-            this.map.addControl(new mapboxgl.GeolocateControl({
-              watchPosition: true,
-            }));
-          }
+          this.loadMarkersInRadius(this.map.getCenter().lng, this.map.getCenter().lat, 500);
+          this.enableGeolocationIcon();
         });
         this.map.on('moveend', this.onMoveEndListener);
         this.map.on('click', this.onMapClickHandler);
