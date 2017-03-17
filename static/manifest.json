@@ -1,7 +1,7 @@
 {
   "name": "Wikiscout",
   "short_name": "Wikiscout",
-  "start_url": ".",
+  "start_url": "/",
   "orientation": "portrait",
   "display": "standalone",
   "background_color": "#fff",

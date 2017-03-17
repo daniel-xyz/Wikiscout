@@ -2,10 +2,13 @@ var path = require('path')
 var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
+var OfflinePlugin = require('offline-plugin')
+
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
+
 
 module.exports = {
   entry: {
@@ -63,5 +66,8 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new OfflinePlugin(),
+  ]
 }
