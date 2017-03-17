@@ -67,23 +67,19 @@ header {
       background-color: #fff;
       margin: 0;
       padding: 0;
+      box-shadow: 1px 1px 9px rgba(0, 0, 0, 0.1);
 
-      li {
-        border-bottom: 1px solid @light-grey;
-        display: block;
-        padding: 1em 0;
-        margin-left: 24px;
-        margin-right: 24px;
+      a {
+        color: @light-grey;
+        text-decoration: none;
+        transition: all .5s ease;
 
-        a {
-          color: @light-grey;
-          text-decoration: none;
-          transition: all .5s ease;
+        li {
+          display: block;
+          padding: 1em 0;
+          margin-left: 24px;
+          margin-right: 24px;
         }
-      }
-
-      li:last-child {
-        border-bottom: none;
       }
     }
 
@@ -104,13 +100,13 @@ header {
         background-color: transparent;
         width: 100%;
 
-        li  {
-          display: inline;
-          border-bottom: none;
-          margin-right: 24px;
+        a {
+          color: #fff;
 
-          a {
-            color: #fff;
+          li  {
+            display: inline;
+            border-bottom: none;
+            margin-right: 24px;
           }
         }
       }
