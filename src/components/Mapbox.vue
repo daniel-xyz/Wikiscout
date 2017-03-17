@@ -139,7 +139,7 @@
       enableGeolocationIcon () {
         if ('geolocation' in navigator) {
           this.map.addControl(new mapboxgl.GeolocateControl({
-            watchPosition: false,
+            watchPosition: true,
           }));
         }
       },

@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Map from '@/components/Map';
-import WikiEntry from '@/components/WikiEntry';
+import MainLayer from '@/components/MainLayer';
+import WikiEntry from '@/pages/WikiEntry';
+import Imprint from '@/pages/Imprint';
+import DataProtection from '@/pages/DataProtection';
 
 Vue.use(Router);
 
@@ -12,15 +14,38 @@ export default new Router({
     {
       path: '/entry/:name',
       components: {
-        layer: WikiEntry,
-        main: Map,
+        layer: MainLayer,
       },
+      children: [
+        {
+          path: '',
+          component: WikiEntry,
+        },
+      ],
     },
     {
-      path: '/',
+      path: '/imprint',
       components: {
-        main: Map,
+        layer: MainLayer,
       },
+      children: [
+        {
+          path: '',
+          component: Imprint,
+        },
+      ],
+    },
+    {
+      path: '/data',
+      components: {
+        layer: MainLayer,
+      },
+      children: [
+        {
+          path: '',
+          component: DataProtection,
+        },
+      ],
     },
   ],
 });

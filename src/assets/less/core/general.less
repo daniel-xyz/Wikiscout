@@ -14,15 +14,20 @@ main {
     max-height: @content-area-height-md;
   }
 
-  .main-layer {
+  #main-layer {
     position: absolute;
     min-height: 100%;
     width: 100%;
     overflow: hidden;
     z-index: 3;
+    background-color: white;
+    box-shadow: 1px 1px 9px rgba(0,0,0,0.1);
 
     @media @md-and-up {
-      width: auto;
+      overflow: auto;
+      max-height: 100%;
+      float: left;
+      width: 580px;
     }
   }
 }

@@ -2,7 +2,7 @@
   <div id="app">
     <top-header></top-header>
     <main>
-      <router-view name="main"></router-view>
+      <mapbox></mapbox>
       <router-view name="layer"></router-view>
     </main>
   </div>
@@ -10,11 +10,13 @@
 
 <script>
   import TopHeader from './components/TopHeader';
+  import Mapbox from './components/Mapbox';
 
   export default {
     name: 'app',
     components: {
       TopHeader,
+      Mapbox,
     },
   };
 </script>

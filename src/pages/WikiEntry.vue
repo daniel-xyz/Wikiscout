@@ -1,11 +1,9 @@
 <template>
-  <transition name="fade">
-    <div id="wiki-entry" class="main-layer content-container">
-      <h4>{{ entry.name }}</h4>
-      <img :src="entry.image.src" :width="entry.image.width">
-      <div v-html="description"></div>
-    </div>
-  </transition>
+  <div id="wiki-entry" class="content-container">
+    <h4>{{ entry.name }}</h4>
+    <img :src="entry.image.src" :width="entry.image.width">
+    <div v-html="description"></div>
+  </div>
 </template>
 
 <script>
@@ -55,7 +53,6 @@
             const thumbnail = Object.values(response.query.pages)[0].thumbnail;
 
             if (typeof thumbnail.source !== 'undefined') {
-              // console.log(thumbnail.source);
               this.entry.image.src = thumbnail.source;
             }
 
@@ -75,18 +72,6 @@
 
     created () {
       this.fillData();
-
-      this.$bus.$emit('menuChangeRequest', {
-        showBack: true,
-        backPath: '/',
-        backText: 'Zur Karte',
-      });
-    },
-
-    destroyed () {
-      this.$bus.$emit('menuChangeRequest', {
-        showBack: false,
-      });
     },
   };
 </script>
