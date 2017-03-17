@@ -9,5 +9,3 @@ test/e2e/reports
 selenium-debug.log
 
 !dist/_redirects
-!dist/manifest.json
-!dist/images/
