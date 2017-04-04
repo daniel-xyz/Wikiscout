@@ -54,11 +54,17 @@
 
             if (typeof thumbnail.source !== 'undefined') {
               this.entry.image.src = thumbnail.source;
+            } else {
+              this.entry.image.src = '';
+              this.entry.image.width = '';
             }
 
             if (typeof thumbnail.width !== 'undefined') {
               this.entry.image.width = thumbnail.width;
             }
+          } else {
+            this.entry.image.src = '';
+            this.entry.image.width = '';
           }
 
           if (typeof Object.values(response.query.pages)[0] !== 'undefined') {

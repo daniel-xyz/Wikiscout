@@ -2,8 +2,8 @@
   <div id="app">
     <top-header></top-header>
     <main>
-      <mapbox></mapbox>
       <router-view name="layer"></router-view>
+      <mapbox></mapbox>
     </main>
   </div>
 </template>

@@ -1,19 +1,23 @@
 <template>
   <div id="map-container">
-    <div id="map"></div>
-    <div id="map-loading-screen" class="main-layer hide-md-and-up">
-      <div id="loading-container">
-        <div id="loading-image"></div>
-        <div id="loading-text">
-          <h4>Karte wird geladen ...</h4>
+    <div id="map" class="non-scrollable-layer"></div>
+
+    <transition name="fade">
+      <div id="map-loading-screen" class="non-scrollable-layer hide-md-and-up" v-show="!mapLoaded">
+        <div id="loading-container">
+          <div id="loading-image"></div>
+          <div id="loading-text">
+            <h4>Karte wird geladen ...</h4>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
   import { markers } from '../services/api';
+  import removeElements from '../utils/removeElementsByClass';
 
   const geolib = require('geolib');
 
@@ -27,6 +31,7 @@
           lng: 0,
           lat: 0,
         },
+        mapLoaded: false,
       };
     },
 
@@ -65,6 +70,8 @@
             return console.error(error.stack); // eslint-disable-line no-console
           }
 
+          removeElements('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
+
           this.lastMarkerUpdateAt.lng = lng;
           this.lastMarkerUpdateAt.lat = lat;
           this.markers = [];
@@ -72,8 +79,27 @@
           console.log(response);
 
           Object.values(response.query.pages).forEach((marker) => {
+            // let thumbnail = '';
+
             if (typeof marker.coordinates === 'undefined') {
               return;
+            }
+
+            if (typeof marker.thumbnail !== 'undefined' && typeof marker.thumbnail.source !== 'undefined') {
+//              const img = document.createElement('img');
+//              img.src = marker.thumbnail.source;
+//
+//              this.map.addImage(marker.title, img);
+//              thumbnail = marker.title;
+
+              const el = document.createElement('div');
+              el.classList.add('marker-thumbnail');
+              el.classList.add('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
+              el.style.backgroundImage = 'url(' + marker.thumbnail.source + ')';
+
+              new mapboxgl.Marker(el, { offset: [-20, -30] })
+                .setLngLat([marker.coordinates[0].lon, marker.coordinates[0].lat])
+                .addTo(this.map);
             }
 
             this.markers.push({
@@ -84,6 +110,7 @@
               },
               properties: {
                 name: marker.title ? marker.title : '',
+//                thumbnail,
               },
             });
           });
@@ -95,7 +122,8 @@
             });
           } else {
             this.addSource('markers');
-            this.addLayer('markers');
+            this.addMarkersLayer('markers');
+            // this.addMarkersThumbnailLayer('markers');
           }
         });
       },
@@ -110,14 +138,13 @@
         });
       },
 
-      addLayer (sourceID) {
+      addMarkersLayer (sourceID) {
         this.map.addLayer({
-          id: sourceID,
+          id: 'markers',
           type: 'symbol',
           source: sourceID,
           layout: {
             'icon-image': 'marker',
-            'icon-offset': [0, -51],
             'icon-allow-overlap': true,
           },
           paint: {
@@ -126,15 +153,21 @@
         });
       },
 
-      removeLoadingLayer () {
-        const loadingLayer = document.getElementById('map-loading-screen');
-
-        loadingLayer.classList.add('hide-opacity');
-
-        window.setTimeout(() => {
-          loadingLayer.classList.add('hide');
-        }, 500);
-      },
+//      addMarkersThumbnailLayer (sourceID) {
+//        this.map.addLayer({
+//          id: 'thumbnails',
+//          type: 'symbol',
+//          source: sourceID,
+//          layout: {
+//            'icon-image': '{thumbnail}',
+//            'icon-offset': [-20, -30],
+//            'icon-allow-overlap': true,
+//          },
+//          paint: {
+//            'icon-opacity': 1,
+//          },
+//        });
+//      },
 
       enableGeolocationIcon () {
         if ('geolocation' in navigator) {
@@ -167,9 +200,9 @@
         const zoomLevel = this.map.getZoom();
 
         if (zoomLevel < 15) {
-          this.map.setPaintProperty('markers', 'icon-opacity', 0);
+          // this.map.setPaintProperty('markers', 'icon-opacity', 0);
         } else {
-          this.map.setPaintProperty('markers', 'icon-opacity', 1);
+          // this.map.setPaintProperty('markers', 'icon-opacity', 1);
 
           const currentLng = this.map.getCenter().lng;
           const currentLat = this.map.getCenter().lat;
@@ -185,10 +218,9 @@
         }
       },
 
-
       initEventListeners () {
         this.map.once('load', () => {
-          this.removeLoadingLayer();
+          this.mapLoaded = true;
           this.loadMarkersInRadius(this.map.getCenter().lng, this.map.getCenter().lat, 500);
           this.enableGeolocationIcon();
         });

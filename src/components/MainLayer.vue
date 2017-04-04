@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div id="main-layer">
+    <div class="scrollable-layer">
       <router-view></router-view>
     </div>
   </transition>
