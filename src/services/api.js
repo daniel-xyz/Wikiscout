@@ -8,7 +8,7 @@ let markers = {
 
   getInRadius (lng, lat, radius, callback) {
     // const url = endpoint + '?action=query&prop=coordinates&colimit=100&pilimit=50&generator=geosearch&ggscoord=' + lat + '|' + lng + '&ggsradius=' + radius + '&ggslimit=100&format=json';
-    const url = endpoint + '?action=query&prop=coordinates|pageimages&colimit=100&piprop=thumbnail&pithumbsize=144&pilimit=50&generator=geosearch&ggscoord=' + lat + '|' + lng + '&ggsradius=' + radius + '&ggslimit=100&format=json&origin=*';
+    const url = endpoint + '?action=query&prop=coordinates|pageimages&colimit=100&piprop=thumbnail&pithumbsize=80&pilimit=50&generator=geosearch&ggscoord=' + lat + '|' + lng + '&ggsradius=' + radius + '&ggslimit=100&format=json&origin=*';
 
     // TODO - Build url with params object
     const params = {
