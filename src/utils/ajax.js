@@ -3,7 +3,7 @@
 let jsonp = require('jsonp');
 
 function send (method, json, url, callback) {
-  let xhr = typeof XMLHttpRequest != 'undefined'
+  let xhr = typeof XMLHttpRequest !== 'undefined'
     ? new XMLHttpRequest()
     : new ActiveXObject('Microsoft.XMLHTTP');
 
@@ -14,17 +14,17 @@ function send (method, json, url, callback) {
   }
 
   if (json) {
-    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
   }
 
   xhr.onreadystatechange = function() {
     let status;
     let data;
 
-    if (xhr.readyState == 4) { // `DONE`
+    if (xhr.readyState === 4) { // `DONE`
       status = xhr.status;
 
-      if (status == 200) {
+      if (status === 200) {
         data = json ? JSON.parse(xhr.responseText) : xhr.responseText;
         callback(null, data);
       } else {

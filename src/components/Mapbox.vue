@@ -17,7 +17,7 @@
 
 <script>
   import { markers } from '../services/api';
-  import removeElements from '../utils/removeElementsByClass';
+//  import removeElements from '../utils/removeElementsByClass';
 
   const geolib = require('geolib');
 
@@ -32,6 +32,7 @@
           lat: 0,
         },
         mapLoaded: false,
+        entriesLoaded: [],
       };
     },
 
@@ -70,36 +71,49 @@
             return console.error(error.stack); // eslint-disable-line no-console
           }
 
-          removeElements('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
+//          removeElements('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
 
           this.lastMarkerUpdateAt.lng = lng;
           this.lastMarkerUpdateAt.lat = lat;
-          this.markers = [];
+          // this.markers = [];
 
-          console.log(response);
+          Object.keys(response.query.pages).forEach((key) => {
+            if (this.entriesLoaded.indexOf(key) !== -1) {
+              return null;
+            }
 
-          Object.values(response.query.pages).forEach((marker) => {
-            // let thumbnail = '';
+            this.entriesLoaded.push(key);
+
+            const marker = response.query.pages[key];
 
             if (typeof marker.coordinates === 'undefined') {
               return;
             }
 
             if (typeof marker.thumbnail !== 'undefined' && typeof marker.thumbnail.source !== 'undefined') {
-//              const img = document.createElement('img');
-//              img.src = marker.thumbnail.source;
+              try {
+                const img = document.createElement('img');
+                img.src = 'https://res.cloudinary.com/dj82hrksp/image/fetch/c_fill,w_80,h_80/f_png/bo_1px_solid_white,r_max/' + marker.thumbnail.source;
+                img.crossOrigin = 'Anonymous';
+                // img.width = 80;
+
+                img.onload = () => {
+                  this.map.addImage(key, img);
+                };
+
+                // this.map.addImage(marker.title, img);
+              } catch (e) {
+                console.error(e);
+              }
+
+//              const el = document.createElement('div');
+//              el.classList.add('marker-thumbnail');
+//              el.classList.add('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
+//              el.style.backgroundImage = 'url(' + marker.thumbnail.source + ')';
 //
-//              this.map.addImage(marker.title, img);
-//              thumbnail = marker.title;
-
-              const el = document.createElement('div');
-              el.classList.add('marker-thumbnail');
-              el.classList.add('marker-' + this.lastMarkerUpdateAt.lng + '-' + this.lastMarkerUpdateAt.lat);
-              el.style.backgroundImage = 'url(' + marker.thumbnail.source + ')';
-
-              new mapboxgl.Marker(el, { offset: [-20, -30] })
-                .setLngLat([marker.coordinates[0].lon, marker.coordinates[0].lat])
-                .addTo(this.map);
+//              new mapboxgl.Marker(el, { offset: [-20, -30] })
+//                .setLngLat([marker.coordinates[0].lon, marker.coordinates[0].lat])
+//                .addTo(this.map);
             }
 
             this.markers.push({
@@ -110,22 +124,40 @@
               },
               properties: {
                 name: marker.title ? marker.title : '',
-//                thumbnail,
+                thumbnail: key,
               },
             });
           });
 
-          if (this.map.getSource('markers')) {
-            this.map.getSource('markers').setData({
-              type: 'FeatureCollection',
-              features: this.markers,
-            });
-          } else {
-            this.addSource('markers');
-            this.addMarkersLayer('markers');
-            // this.addMarkersThumbnailLayer('markers');
-          }
+          this.addOrSetSourcesAndLayers(false);
         });
+      },
+
+      addOrSetSourcesAndLayers (once) {
+        if (this.map.getSource('markers')) {
+          this.map.getSource('markers').setData({
+            type: 'FeatureCollection',
+            features: this.markers,
+          });
+        } else {
+          this.addSource('markers');
+          this.addMarkersLayer('markers');
+          this.addMarkersThumbnailLayer('markers');
+        }
+
+        if (!once) {
+          window.setTimeout(() => {
+            this.addOrSetSourcesAndLayers(true);
+          }, 100);
+
+          window.setTimeout(() => {
+            this.addOrSetSourcesAndLayers(true);
+          }, 1000);
+
+          window.setTimeout(() => {
+            this.addOrSetSourcesAndLayers(true);
+          }, 4000);
+        }
       },
 
       addSource (sourceID) {
@@ -153,21 +185,21 @@
         });
       },
 
-//      addMarkersThumbnailLayer (sourceID) {
-//        this.map.addLayer({
-//          id: 'thumbnails',
-//          type: 'symbol',
-//          source: sourceID,
-//          layout: {
-//            'icon-image': '{thumbnail}',
-//            'icon-offset': [-20, -30],
-//            'icon-allow-overlap': true,
-//          },
-//          paint: {
-//            'icon-opacity': 1,
-//          },
-//        });
-//      },
+      addMarkersThumbnailLayer (sourceID) {
+        this.map.addLayer({
+          id: 'thumbnails',
+          type: 'symbol',
+          source: sourceID,
+          layout: {
+            'icon-image': '{thumbnail}',
+            'icon-offset': [0, -10],
+            'icon-allow-overlap': false,
+          },
+          paint: {
+            'icon-opacity': 1,
+          },
+        });
+      },
 
       enableGeolocationIcon () {
         if ('geolocation' in navigator) {
@@ -178,7 +210,7 @@
       },
 
       onMapClickHandler (e) {
-        const features = this.map.queryRenderedFeatures(e.point, { layers: ['markers'] });
+        const features = this.map.queryRenderedFeatures(e.point, { layers: ['markers', 'thumbnails'] });
 
         if (!features.length) {
           this.$router.push({ path: '/' });
@@ -213,7 +245,7 @@
           );
 
           if (distance > 200) {
-            this.loadMarkersInRadius(currentLng, currentLat, 500);
+            this.loadMarkersInRadius(currentLng, currentLat, 200);
           }
         }
       },
